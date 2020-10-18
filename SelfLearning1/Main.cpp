@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string.h>
 #include <stdio.h>
+#include <string>
 
 using namespace std;
 
@@ -31,20 +32,34 @@ void delete_word(const char filename[], const char word[])
 {
 	string fileData;
 	bool wordExist = false;
+	int renameResult;
 	ifstream readFile;
 	readFile.open(filename);
 	while (getline(readFile, fileData))
 	{
-		if (word == fileData)
+		if (word != fileData)
+		{
+			ofstream creatFile;
+			creatFile.open("temp.txt", ofstream::app);
+			creatFile << fileData << endl;
+			creatFile.close();
+		}
+		else
 		{
 			wordExist = true;
-			break;
 		}
 	}
 	readFile.close();
+	remove(filename);
+	renameResult = rename("temp.txt", filename);
+	if (renameResult == 1)
+	{
+		cout << "Something went wrong!" << endl;
+		exit(1);
+	}
 	if (wordExist == true)
 	{
-		cout << fileData << endl;
+		cout << "The word successfully deleted!" << endl;
 	}
 	else
 	{
@@ -99,7 +114,7 @@ int main(int argc, char** argv)
 			readFile.open(filename);
 			if (readFile.is_open())
 			{
-				cout << "File exist, great!" << endl;
+				cout << "File exist, great" << endl;
 			}
 			else
 			{
@@ -107,7 +122,6 @@ int main(int argc, char** argv)
 				cout << "Creating one..." << endl;
 				ofstream creatFile;
 				creatFile.open(filename);
-				creatFile << "";
 				creatFile.close();
 			}
 			readFile.close();
@@ -152,6 +166,5 @@ int main(int argc, char** argv)
 		}
 		cout << endl;
 	}
-
 	return(0);
 }
