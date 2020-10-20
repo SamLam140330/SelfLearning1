@@ -30,6 +30,7 @@ bool lookup(const char filename[], const char word[])
 // the result should not contain blank lines
 void delete_word(const char filename[], const char word[])
 {
+	const char tempfile[] = "temp.txt";
 	string fileData;
 	bool wordExist = false;
 	int renameResult;
@@ -40,7 +41,7 @@ void delete_word(const char filename[], const char word[])
 		if (word != fileData)
 		{
 			ofstream creatFile;
-			creatFile.open("temp.txt", ofstream::app);
+			creatFile.open(tempfile, ofstream::app);
 			creatFile << fileData << endl;
 			creatFile.close();
 		}
@@ -51,7 +52,7 @@ void delete_word(const char filename[], const char word[])
 	}
 	readFile.close();
 	remove(filename);
-	renameResult = rename("temp.txt", filename);
+	renameResult = rename(tempfile, filename);
 	if (renameResult == 1)
 	{
 		cout << "Something went wrong!" << endl;
@@ -130,11 +131,13 @@ int main(int argc, char** argv)
 
 		cout << "1 for lookup; 2 for insertion; 3 for deletion; q for quit: ";
 		cin >> choice;
+		cout << "You inputted: " << choice << endl;
 
 		if (choice == '1')
 		{
 			cout << "Please enter the word you want to search for: ";
-			cin >> word;
+			cin.ignore();
+			cin.getline(word, N);
 			if (lookup(filename, word))
 			{
 				cout << "The word \"" << word << "\" is found!" << endl;
@@ -147,13 +150,15 @@ int main(int argc, char** argv)
 		else if (choice == '2')
 		{
 			cout << "Please enter the word you want to insert: ";
-			cin >> word;
+			cin.ignore();
+			cin.getline(word, N);
 			insert_word(filename, word);
 		}
 		else if (choice == '3')
 		{
 			cout << "Please enter the word you want to delete: ";
-			cin >> word;
+			cin.ignore();
+			cin.getline(word, N);
 			delete_word(filename, word);
 		}
 		else if (choice == 'q')
